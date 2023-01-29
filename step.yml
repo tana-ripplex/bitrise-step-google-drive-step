@@ -67,7 +67,7 @@ toolkit:
 
 
 inputs:
-  - GOOGLE_APPLICATION_CREDENTIALS: 
+  - google_application_credentials: 
     opts:
       title: "service account key"
       summary: GoogleDriveにアクセスするためのキー情報を設定します。

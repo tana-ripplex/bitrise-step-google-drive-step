@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	fmt.Println("This is the value specified for the input 'example_step_input':", os.Getenv("example_step_input"))
+
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", os.Getenv("google_application_credentials"))
 
 	ctx := context.Background()
 
