@@ -13,6 +13,10 @@ import (
 
 func main() {
 
+	println(os.Getenv("google_application_credentials"),
+		os.Getenv("target_folder_id"),
+		os.Getenv("deploy_item"))
+
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", os.Getenv("google_application_credentials"))
 
 	ctx := context.Background()
