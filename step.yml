@@ -67,24 +67,27 @@ toolkit:
 
 
 inputs:
-  - example_step_input: Default Value - you can leave this empty if you want to
+  - GOOGLE_APPLICATION_CREDENTIALS: 
     opts:
-      title: "Example Step Input"
-      summary: Summary. No more than 2-3 sentences.
+      title: "service account key"
+      summary: GoogleDriveにアクセスするためのキー情報を設定します。
       description: |
-        Description of this input.
-
-        Can be Markdown formatted text.
-      is_expand: true
+        サービスアカウントでGoogleDriveにアクセスするためのキー情報を設定します。（JSONキー）
+      is_sensitive: true
       is_required: true
-      value_options: []
 
-outputs:
-  - EXAMPLE_STEP_OUTPUT:
+  - target_folder_id: 
     opts:
-      title: "Example Step Output"
-      summary: Summary. No more than 2-3 sentences.
+      title: "target folder id"
+      summary: GoogleDriveのアップロード先フォルダIDを設定します。
       description: |
-        Description of this output.
-
-        Can be Markdown formatted text.
+        GoogleDriveのアップロード先フォルダIDを設定します。
+        （ブラウザで開いた時にURLに表示されているID）
+      is_required: true
+  - deploy_item: 
+    opts:
+      title: "Deploy file"
+      summary: GoogleDriveにアップロードするファイルを設定します。
+      description: |
+        GoogleDriveにアップロードするファイルを設定します。
+      is_required: true
