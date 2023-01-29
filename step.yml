@@ -73,8 +73,6 @@ inputs:
       summary: GoogleDriveにアクセスするためのキー情報を設定します。
       description: |
         サービスアカウントでGoogleDriveにアクセスするためのキー情報を設定します。（JSONキー）
-      is_sensitive: true
-      is_required: true
 
   - target_folder_id: 
     opts:
@@ -83,11 +81,9 @@ inputs:
       description: |
         GoogleDriveのアップロード先フォルダIDを設定します。
         （ブラウザで開いた時にURLに表示されているID）
-      is_required: true
   - deploy_item: 
     opts:
       title: "Deploy file"
       summary: GoogleDriveにアップロードするファイルを設定します。
       description: |
         GoogleDriveにアップロードするファイルを設定します。
-      is_required: true
