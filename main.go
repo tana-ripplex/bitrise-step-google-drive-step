@@ -35,15 +35,15 @@ func main() {
 
 		for _, f := range files {
 			path := filepath.Join(filename, f.Name())
-			res3 := upload(path, srv, folderid)
+			res3, e := upload(path, srv, folderid)
 			if !res3 {
-				log.Fatalf("Unable to retrieve files: %v", path)
+				log.Fatalf("Unable to retrieve files: %v", e)
 			}
 		}
 	} else {
-		res3 := upload(filename, srv, folderid)
+		res3, e := upload(filename, srv, folderid)
 		if !res3 {
-			log.Fatalf("Unable to retrieve files: %v", filename)
+			log.Fatalf("Unable to retrieve files: %v", e)
 		}
 
 	}
@@ -63,18 +63,18 @@ func main() {
 	os.Exit(0)
 }
 
-func upload(filename string, srv *drive.Service, folderid string) bool {
+func upload(filename string, srv *drive.Service, folderid string) (bool, error) {
 
 	basename := filepath.Base(filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalln(err)
-		return false
+		return false, err
 	}
 	stat, err := file.Stat()
 	if err != nil {
 		log.Fatalln(err)
-		return false
+		return false, err
 	}
 	defer file.Close()
 
@@ -86,6 +86,7 @@ func upload(filename string, srv *drive.Service, folderid string) bool {
 	).Media(file, googleapi.ChunkSize(int(stat.Size()))).Do()
 	if err != nil {
 		log.Fatalln(err)
+		return false, err
 	}
 	fmt.Printf("%s\n", res.Id)
 
@@ -96,10 +97,10 @@ func upload(filename string, srv *drive.Service, folderid string) bool {
 
 	if err != nil {
 		log.Fatalln(err)
-		return false
+		return false, err
 	}
 
 	fmt.Printf("%s\n", res2.DisplayName)
-	return true
+	return true, nil
 
 }
