@@ -30,7 +30,7 @@ func main() {
 
 	fInfo, _ := os.Stat(filename)
 
-	if !fInfo.IsDir() {
+	if fInfo.IsDir() {
 		files, _ := os.ReadDir(filename)
 
 		for _, f := range files {
