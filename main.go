@@ -19,25 +19,64 @@ func main() {
 
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", os.Getenv("google_application_credentials"))
 
-	ctx := context.Background()
+	filename := os.Getenv("deploy_item")
+	folderid := os.Getenv("target_folder_id")
 
+	ctx := context.Background()
 	srv, err := drive.NewService(ctx)
 	if err != nil {
 		log.Fatalf("Unable to retrieve Drive client: %v", err)
 	}
-	filename := os.Getenv("deploy_item")
+
+	fInfo, _ := os.Stat(filename)
+
+	if !fInfo.IsDir() {
+		files, _ := os.ReadDir(filename)
+
+		for _, f := range files {
+			path := filepath.Join(filename, f.Name())
+			res3 := upload(path, srv, folderid)
+			if !res3 {
+				log.Fatalf("Unable to retrieve files: %v", path)
+			}
+		}
+	} else {
+		res3 := upload(filename, srv, folderid)
+		if !res3 {
+			log.Fatalf("Unable to retrieve files: %v", filename)
+		}
+
+	}
+
+	r, err := srv.Files.List().SupportsAllDrives(true).PageSize(1000).
+		Fields("files(id, name)").
+		Q(fmt.Sprintf("'%s' in parents", folderid)). // 特定のフォルダ配下
+		Context(ctx).Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve files: %v", err)
+	}
+
+	for _, f := range r.Files {
+		println(f.Name, f.Id)
+	}
+
+	os.Exit(0)
+}
+
+func upload(filename string, srv *drive.Service, folderid string) bool {
+
 	basename := filepath.Base(filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalln(err)
+		return false
 	}
 	stat, err := file.Stat()
 	if err != nil {
 		log.Fatalln(err)
+		return false
 	}
 	defer file.Close()
-
-	folderid := os.Getenv("target_folder_id")
 
 	res, err := srv.Files.Create(
 		&drive.File{
@@ -57,21 +96,10 @@ func main() {
 
 	if err != nil {
 		log.Fatalln(err)
+		return false
 	}
 
 	fmt.Printf("%s\n", res2.DisplayName)
+	return true
 
-	r, err := srv.Files.List().SupportsAllDrives(true).PageSize(1000).
-		Fields("files(id, name)").
-		Q(fmt.Sprintf("'%s' in parents", folderid)). // 特定のフォルダ配下
-		Context(ctx).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve files: %v", err)
-	}
-
-	for _, f := range r.Files {
-		println(f.Name, f.Id)
-	}
-
-	os.Exit(0)
 }
